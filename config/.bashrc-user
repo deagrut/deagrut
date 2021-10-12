@@ -67,9 +67,9 @@ export LESS_TERMCAP_mb=$'\e[5;31m'			# Start Blink
 export LESS_TERMCAP_md=$'\e[1;38;5;74m'		# Start Bold
 export LESS_TERMCAP_me=$'\e[0m'				# Stop Bold
 export LESS_TERMCAP_us=$'\e[4;38;5;146m'	# Start Underline (Values)
-export LESS_TERMCAP_ue=$'\e[0m'			# Stop underline
+export LESS_TERMCAP_ue=$'\e[0m'				# Stop underline
 export LESS_TERMCAP_so=$'\e[7;38;5;246m'	# Start Reverse (Info box)
-export LESS_TERMCAP_se=$'\e[0m'			# Stop Reverse
+export LESS_TERMCAP_se=$'\e[0m'				# Stop Reverse
 
 # LS_COLORS
 export LS_COLORS="${LS_COLORS}di=01;34:ex=01;32:"
@@ -85,10 +85,10 @@ export GCC_COLORS="error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quo
 alias please='sudo $(history -p \!\!)'
 
 # ls
-alias lla='ls -ahlF'
-alias ll='ls -hlF'
-alias la='ls -ahF'
 alias l='ls -hCF'
+alias la='ls -AhF'
+alias ll='ls -hlF'
+alias lla='ls -AhlF'
 
 # tree
 alias tree='tree -F'
