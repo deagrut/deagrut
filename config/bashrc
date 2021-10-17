@@ -1,0 +1,111 @@
+#### Colors ####################################################
+#### Prompt ####################
+# Check if stdout is a terminal.
+if [ -t 1 ] ; then
+	# Check if it support colors (and how many).
+	ncolors=$(tput colors)
+	if [ -n "${ncolors}" ] && [ ${ncolors} -ge 8 ] ; then
+		if [ -f /etc/dgrt/bashrc-ANSIandMORE ] ; then
+			. /etc/dgrt/bashrc-ANSIandMORE
+			color_prompt=yes
+		fi
+	else
+		color_prompt=
+	fi
+fi
+
+
+if [ "$color_prompt" = "yes" ] ; then
+	if [ "$USER" = "root" ] ; then
+		usr_color=${FGBRED}
+	else
+		usr_color=${FGBCYA}
+	fi
+	PS1="${RST}${debian_chroot:+($debian_chroot)}${BOL}${usr_color}\u@\h${RST}:${BOL}${FGBLU}\W/${RST}\\$ "
+	PS2="${RST}${BOL}${FGBGRE}>${RST} "
+	unset usr_color
+else
+    PS1="\[\e[0m\]${debian_chroot:+($debian_chroot)}\u@\h:\w/\\$ "
+	PS2="\[\e[0m\]> "
+fi
+
+unset color_prompt
+################################
+
+# If this is an xterm set the title to user@host:dir
+case "$TERM" in
+xterm*|rxvt*)
+	PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w/\a\]$PS1"
+	;;
+*)
+	;;
+esac
+
+##### Colored commands ##########
+
+if [ -x /usr/bin/dircolors ] ; then
+	test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+	alias ls='ls --color=auto'
+	alias dir='dir --color=auto'
+	alias vdir='vdir --color=auto'
+
+	alias tree='tree -c'
+
+	alias grep='grep --color=auto'
+	alias fgrep='fgrep --color=auto'
+	alias egrep='egrep --color=auto'
+fi
+
+
+
+#### Custom colors #############################################
+
+# Less Colors (for Man Pages)
+export LESS_TERMCAP_mb=$'\e[5;31m'			# Start Blink
+export LESS_TERMCAP_md=$'\e[1;38;5;74m'		# Start Bold
+export LESS_TERMCAP_me=$'\e[0m'				# Stop Bold
+export LESS_TERMCAP_us=$'\e[4;38;5;146m'	# Start Underline (Values)
+export LESS_TERMCAP_ue=$'\e[0m'				# Stop underline
+export LESS_TERMCAP_so=$'\e[7;38;5;246m'	# Start Reverse (Info box)
+export LESS_TERMCAP_se=$'\e[0m'				# Stop Reverse
+
+# LS_COLORS
+export LS_COLORS="${LS_COLORS}di=01;34:ex=01;32:"
+
+# GCC_COLORS
+export GCC_COLORS="error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01"
+
+
+
+#### Aliases ###################################################
+
+# Please Sudo !!!
+alias please='sudo $(history -p \!\!)'
+
+# ls
+alias l='ls -hCF'
+alias la='ls -AhF'
+alias ll='ls -hlF'
+alias lla='ls -AhlF'
+alias llt='ls -AhlFt'
+alias lls='ls -AhlFS'
+
+# tree
+alias tree='tree -F'
+alias trea='tree -a'
+
+# git
+alias gph='git push'
+alias gpl='git pull'
+alias gpho='git push origin'
+alias gplo='git pull origin'
+alias gst='git status'
+alias gbr='git branch'
+alias gch='git checkout'
+
+
+
+#### History ###################################################
+
+HISTCONTROL=ignoredups:erasedups
+HISTIGNORE="&:ls:[bf]g:exit:pwd:clear"
