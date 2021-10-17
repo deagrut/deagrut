@@ -5,10 +5,7 @@ if [ -t 1 ] ; then
 	# Check if it support colors (and how many).
 	ncolors=$(tput colors)
 	if [ -n "${ncolors}" ] && [ ${ncolors} -ge 8 ] ; then
-		if [ -f /etc/dgrt/bashrc-ANSIandMORE ] ; then
-			. /etc/dgrt/bashrc-ANSIandMORE
-			color_prompt=yes
-		fi
+		color_prompt=yes
 	else
 		color_prompt=
 	fi
@@ -16,17 +13,23 @@ fi
 
 
 if [ "$color_prompt" = "yes" ] ; then
-	if [ "$USER" = "root" ] ; then
-		usr_color=${FGBRED}
+	if [ -f /etc/dgrt/XTCS/XTCS-SGR.sh ] ; then
+		. /etc/dgrt/XTCS/XTCS-SGR.sh
+		if [ "$USER" = "root" ] ; then
+			usr_color="\[${XTCS_SGR_FGBRED}\]"
+		else
+			usr_color="\[${XTCS_SGR_FGBCYA}\]"
+		fi
+		PS1="\[${XTCS_SGR_RST}\]${debian_chroot:+($debian_chroot)}\[${XTCS_SGR_BOL}\]${usr_color}\u@\h\[${XTCS_SGR_RST}\]:\[${XTCS_SGR_BOL}\]\[${XTCS_SGR_FGBLU}\]\W/\[${XTCS_SGR_RST}\]\\$ "
+		PS2="\[${XTCS_SGR_RST}\]\[${XTCS_SGR_BOL}\]\[${XTCS_SGR_FGBGRE}\]>\[${XTCS_SGR_RST}\] "
+		unset usr_color
 	else
-		usr_color=${FGBCYA}
+		PS1="${debian_chroot:+($debian_chroot)}\[\e[01;32m\]\u@\h\[\e[0m\]:\[\e[01;34m\]\w\[\e[0m\]\$ "
+		PS2="\[\e[01;32m\]>\[\e[0m\] "
 	fi
-	PS1="${RST}${debian_chroot:+($debian_chroot)}${BOL}${usr_color}\u@\h${RST}:${BOL}${FGBLU}\W/${RST}\\$ "
-	PS2="${RST}${BOL}${FGBGRE}>${RST} "
-	unset usr_color
 else
-    PS1="\[\e[0m\]${debian_chroot:+($debian_chroot)}\u@\h:\w/\\$ "
-	PS2="\[\e[0m\]> "
+    PS1="${debian_chroot:+($debian_chroot)}\u@\h:\w/\\$ "
+	PS2="> "
 fi
 
 unset color_prompt
