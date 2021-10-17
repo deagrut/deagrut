@@ -1,0 +1,168 @@
+" deagrut
+" 2021-10-17
+"---------------------------------------------------------------
+set nocompatible
+
+filetype on			" Détection du type de fichier
+filetype indent on	" Auto-Indentation en fonction du type de fichier
+
+set number relativenumber			" Numérotation des lignes
+
+set background=dark	" Couleurs adaptées pour fond noir
+set linebreak		" Affichage saut de ligne au dernier mot au lieu du dernier caractère (requier Wrap lines, actif par défaut)
+set showmatch		" Surligne le mots recherché dans le texte
+set mouse=cinr		" Activation de la souris dans tous les modes sauf visuel (Appuyer sur "shift" pour faire des sélections dans le terminal)
+
+"---------------------------------------------------------------
+" Searching
+set hlsearch		" Surligne tous les résultats de la recherche
+set incsearch		" Place le curseur sur la première occurence
+set ignorecase		" Insensibilité à la casse
+set smartcase		" Avec ignorecase : Insensibilité à la casse seulement sur le premier caractère
+
+" Effacer le surlignage des mots recherchés
+nnoremap <unique> <silent> ,<space> :nohlsearch<CR>
+
+"---------------------------------------------------------------
+" Editing
+set undofile
+set undodir=~/.vim/.undo//
+set noerrorbells		" Pas de "beep"
+set novisualbell		" Pas de clignotement d'écran au lieu du "beep"
+set autoread			" Monitorer les changements sur le fichier
+
+
+
+"---------------------------------------------------------------
+" Coloration syntaxique
+syntax on			" Coloration syntaxique
+
+noremap <silent> <C-S-F7> :if exists("g:syntax_on")
+\		<Bar> syntax off
+\	<Bar> else
+\		<Bar> syntax enable
+\	<Bar> endif <CR>
+
+inoremap <silent> <C-S-F7> <C-o>:if exists("g:syntax_on")
+\<Bar> syntax off
+\<Bar> else
+\<Bar> syntax enable
+\<Bar> endif <CR>
+
+"---------------------------------------------------------------
+" Indentation
+set tabstop=4		" Affichage tabulation
+set softtabstop=4	" Tabulation
+set shiftwidth=4	" Auto-Indentation
+set noexpandtab		" Ne Pas Remplacer les tabulation par des espaces
+set nosmartindent		" Améliore l'auto-indentation, notamment en collant du texte déjà indenté
+set smarttab		" Améliore l'auto-indentation
+"set paste			" Maintien de l'indentation telle qu'elle est dans le presse-papier
+set autoindent		" Auto-Indentation des nouvelles lignes
+set cindent			" Auto-Indentation type langage C
+
+"---------------------------------------------------------------
+" Conserver l'indentation des lignes vides
+inoremap <CR> <CR><space><BS>
+nnoremap o o<space><BS>
+nnoremap O O<space><BS>
+
+" Fermeture et Saut de ligne
+inoremap {<CR> {<CR>}<Esc>ko<space><BS>
+inoremap [<CR> [<CR>]<Esc>ko<space><BS>
+inoremap (<CR> (<CR>)<Esc>ko<space><BS>
+
+" Fermeture sur une ligne
+inoremap (<space> (<space><space>)<Esc>hi
+inoremap (( ()<Esc>i
+
+inoremap {<space> {<space><space>}<Esc>hi
+inoremap {{ {}<Esc>i
+
+inoremap [<space> [<space><space>]<Esc>hi
+inoremap [[ []<Esc>i
+
+" Affichage des caractères non affichables
+noremap <silent> <C-S-F8> :set list!<CR>
+inoremap <silent> <C-S-F8> <C-o>:set list!<CR>
+
+set nolist
+if has("patch-7.4.710")
+	set listchars=eol:¶,extends:>,precedes:<,space:·,tab:»~,trail:~
+else
+	set listchars=eol:¶,extends:>,precedes:<,tab:»~,trail:~
+endif
+
+
+"---------------------------------------------------------------
+" Appearance
+
+"-------------------------------
+" StatusLine
+function! StatuslineMode()
+	let l:mode=mode()
+	if l:mode==#"n"
+		return "NORMAL"
+	elseif l:mode==?"v"
+		return "VISUAL"
+	elseif l:mode==#"i"
+		return "INSERT"
+	elseif l:mode==#"R"
+		return "REPLACE"
+	elseif l:mode==?"s"
+		return "SELECT"
+	elseif l:mode==#"t"
+		return "TERMINAL"
+	elseif l:mode==#"c"
+		return "COMMAND"
+	elseif l:mode==#"!"
+		return "SHELL"
+	endif
+endfunction
+
+function! GitBranch()
+	return system("git rev-parse --abbrev-ref HEAD 2>/dev/null | tr -d '\n'")
+endfunction
+
+function! StatuslineGit()
+	let l:branchname = GitBranch()
+	return strlen(l:branchname) > 0?'  '.l:branchname.' ':''
+endfunction
+
+
+set laststatus=2
+" Left align
+"set statusline+=%#PmenuSel#
+set statusline+=%#LineNr#
+set statusline+=%-8(%{StatuslineMode()}%)
+set statusline+=%{StatuslineGit()}
+set statusline+=%#CursorLineNr#
+set statusline+=\ %F
+set statusline+=%1*
+set statusline+=\ %y
+set statusline+=\ %{&fileencoding?&fileencoding:&encoding}
+set statusline+=\ [%{&fileformat}\]
+
+" Right align
+set statusline+=%=
+set statusline+=%2*
+set statusline+=\ Aff:%4P
+set statusline+=\ 
+set statusline+=%#CursorColumn#
+set statusline+=\ Cur:%3p%%
+set statusline+=\ %4l:%-4c
+
+
+"-------------------------------
+" Coloring
+hi User1 ctermbg=darkgray	ctermfg=white	guibg=black	guifg=white
+hi User2 ctermbg=gray	ctermfg=darkgray	guibg=black	guifg=white
+" Line Numbers
+hi LineNr		ctermbg=darkgray	ctermfg=lightblue
+hi CursorLineNr	ctermbg=lightblue	ctermfg=darkgrey
+
+" Caractères non affichables
+" "eol", "extends", "precedes"
+hi NonText		ctermfg=1 guifg=red
+" "nbsp", "space", "tab", "trail"
+hi SpecialKey	ctermfg=1 guifg=red
