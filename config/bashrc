@@ -109,3 +109,8 @@ alias gch='git checkout'
 
 HISTCONTROL=ignoredups:erasedups
 HISTIGNORE="&:ls:[bf]g:exit:pwd:clear"
+
+#### Functions #################################################
+mkcdir () {
+	mkdir -p -- "$1" && cd -P -- "$1"
+}
