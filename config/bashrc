@@ -85,6 +85,9 @@ export GCC_COLORS="error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quo
 # Please Sudo !!!
 alias please='sudo $(history -p \!\!)'
 
+# rm
+alias rm='rm -I'
+
 # ls
 alias l='ls -hCF'
 alias la='ls -AhF'
@@ -95,7 +98,7 @@ alias lls='ls -AhlFS'
 
 # tree
 alias tree='tree -F'
-alias trea='tree -a'
+alias trea='tree -aF'
 
 # git
 alias gph='git push'
